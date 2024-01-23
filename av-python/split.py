@@ -2,6 +2,7 @@ import os
 import av
 from io import BytesIO
 import math
+import time
 
 input_file = 'video.mp4'
 output_directory = 'frames'
@@ -16,6 +17,9 @@ video_stream = container.streams.video[0]
 
 # Calculate delay between frames based on the desired frame rate
 frameIndexMultiplier = math.ceil(1000 / desired_fps)
+
+start = time.time()
+print("Started extracting frames")
 
 for packet in container.demux(video=0):
   for frame in packet.decode():
@@ -35,3 +39,7 @@ for packet in container.demux(video=0):
     output_path = os.path.join(output_directory, output_pattern % frame.index)
     with open(output_path, 'wb') as f:
       f.write(image_bytes.getvalue())
+
+end = time.time()
+print("Frames extracted successfully!")
+print("Time spent in seconds: ", end - start)
